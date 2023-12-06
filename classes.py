@@ -89,5 +89,3 @@ nail = Nail()
 print("Nail before hammering: ", nail)
 hammer.hammerIn(nail)
 print("Nail after hammering: ", nail)
-
-\
