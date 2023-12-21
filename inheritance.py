@@ -16,8 +16,8 @@ class File:
 
 class Image(File):
     def __init__(self, name, size, image_size):
-        super().__init__(name, size)
         self.image_size = image_size
+        super().__init__(name, size)
 
 
 class User:
@@ -52,8 +52,8 @@ class Post:
 
 class FilePost(Post):
     def __init__(self, user, time_posted, content, file):
-        super().__init__(user, time_posted, content)
         self.file = file
+        super().__init__(user, time_posted, content)
 
     def display(self):
         print(f"Content: {self.content}\nFile: {self.file.name}")
