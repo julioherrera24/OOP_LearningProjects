@@ -2,27 +2,27 @@ import random
 
 # constant dictionary to hold the value of the suits
 SUITS = {
-    "diamonds": 1,
-    "hearts": 2,
-    "spades": 3,
-    "clubs": 4
+    "Diamonds": 1,
+    "Hearts": 2,
+    "Spades": 3,
+    "Clubs": 4
 }
 
 # constant dictionary to hold the value of the ranks/value of each card
 RANKS = {
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-    "jack": 11,
-    "queen": 12,
-    "king": 13,
-    "ace": 14
+    "Two": 2,
+    "Three": 3,
+    "Four": 4,
+    "Five": 5,
+    "Six": 6,
+    "Seven": 7,
+    "Eight": 8,
+    "Nine": 9,
+    "Ten": 10,
+    "Jack": 11,
+    "Queen": 12,
+    "King": 13,
+    "Ace": 14
 }
 
 
@@ -37,25 +37,12 @@ class PlayingCard:
         #  ex: this will return two of diamonds, three of hearts
         return " ".join([self.rank, "of", self.suit])
 
-    # this will compare to other playing card
-    def is_better_than(self, other_card):
-        other_rank = RANKS[other_card.rank]
-        our_rank = RANKS[self.rank]
-        if our_rank > other_rank:
-            return True
-        if our_rank < other_rank:
-            return False
-
-        other_suit = SUITS[other_card.suit]
-        our_suit = SUITS[self.suit]
-        return our_suit > other_suit
-
 
 class Deck:
     def __init__(self):  # constructor that creates deck of cards and does initial shuffle
         self.cards = []
-        for rank in RANKS:
-            for suit in SUITS:
+        for suit in SUITS:
+            for rank in RANKS:
                 self.cards.append(PlayingCard(suit, rank))
         self.shuffle()
 
@@ -122,9 +109,9 @@ class View:
         print("")
         while True:
             prompt = input("Play again? Y/N: ")
-            if prompt == "Y" or "y":
+            if prompt == "Y" or prompt == "y":
                 return True
-            if prompt == "N" or "n":
+            if prompt == "N" or prompt == "n":
                 return False
 class Controller:
     def __init__(self, deck, view):
@@ -136,7 +123,7 @@ class Controller:
         self.view = view
 
     def add_player(self, new_player):
-        self.players.append(new_player)
+        self.players.append(Player(new_player))
 
     def start_game(self):
         self.deck.shuffle()  # initially shuffles the deck
@@ -146,21 +133,26 @@ class Controller:
                 player.hand.add_card(next_card)
 
     def evaluate_game(self):  # compares the cards of all the players and returns name of player with best card
+        best_rank = None
+        best_rank_suit = None
         best_candidate = None
 
         for player in self.players:
-            if best_candidate is None:
-                best_candidate = player
-                continue
+            this_rank = RANKS[player.hand.card_by_index(0).rank]
+            this_suit = SUITS[player.hand.card_by_index(0).suit]
+            if (best_rank is None
+                    or (this_rank > best_rank)
+                    or (this_rank == best_rank and this_suit > best_rank_suit)
+                ):
+                best_candidate = player.name
+                best_rank = this_rank
+                best_rank_suit = this_suit
 
-            if player.hand.card_by_index(0).is_better_than(best_candidate.hand.card_by_index(0)):
-                best_candidate = player
-
-        return best_candidate.name
+        return best_candidate
 
     def rebuild_deck(self):  # goes through each player, collects all cards and shuffles cards for new game
         for player in self.players:
-            while player.hands.cards:
+            while player.hand.cards:
                 this_card = player.hand.remove_card()
                 this_card.face_up = False
                 self.deck.add_card(this_card)
